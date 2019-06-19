@@ -2,7 +2,7 @@
   "name": "azure-functions-middleware-cascade",
   "version": "1.0.0",
   "description": "A small middleware cascade for Azure Functions, like Express, Koa or Hapi.",
-  "main": "exemplo.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
