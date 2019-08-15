@@ -1,3 +1,5 @@
+const STOP_SIGNAL = '!STOP!';
+
 class AzureFunctionCascade {
   constructor(pipeline) {
     this.pipeline = pipeline || [];
@@ -33,12 +35,12 @@ class AzureFunctionCascade {
         const middleware = this.pipeline[i];
         let result;
         if (middleware.async) {
-          result = await middleware.func(context);
+          result = await middleware.func(context, STOP_SIGNAL);
         } else {
           result = await execFuncNextAsync(middleware.func, context);
         }
         if (result) {
-          error = result;
+          if (result !== STOP_SIGNAL) error = result;
           break;
         }
       }
@@ -53,10 +55,10 @@ function execFuncNextAsync(func, context) {
   return new Promise((resolve, reject) => {
     const next = (val) => resolve(val);
     try {
-      func(context, next);
+      func(context, next, STOP_SIGNAL);
     } catch (e) {
       reject(e);
-    }              
+    }
   });
 }
 
