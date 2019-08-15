@@ -31,6 +31,10 @@ class AzureFunctionCascade {
   listen() {
     return async (context) => {
       let error;
+
+      if (!context.res) context.res = {};
+      if (!context.res.headers) context.res.headers = {};
+
       for (let i = 0; i < this.pipeline.length; i++) {
         const middleware = this.pipeline[i];
         let result;
@@ -44,6 +48,7 @@ class AzureFunctionCascade {
           break;
         }
       }
+
       if (error) {
         this.catchFunction(error, context);
       }
