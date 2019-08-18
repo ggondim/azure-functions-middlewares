@@ -1,6 +1,11 @@
 # azure-functions-middleware-cascade
 A middleware cascade, like Express, Koa or Hapi, but for Azure Functions!
 
+![npm bundle size](https://img.shields.io/bundlephobia/min/azure-functions-middleware-cascade?label=package%20size)
+![npm](https://img.shields.io/npm/dw/azure-functions-middleware-cascade)
+![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/azure-functions-middleware-cascade)
+![Travis (.com)](https://img.shields.io/travis/com/noalvo/azure-functions-middleware-cascade)
+
 ## Features
 - Async/await middleware support
 - [Cascade error capture](#Capturing-errors) (a.k.a. "catch middleware")
@@ -12,9 +17,12 @@ A middleware cascade, like Express, Koa or Hapi, but for Azure Functions!
 
 ### Simplest usage
 
+Install latest version at NPM ![npm](https://img.shields.io/npm/v/azure-functions-middleware-cascade)
+
 ```
 $ npm install --save azure-functions-middleware-cascade
 ```
+Listen to the cascade exporting it as the function entry point:
 
 ```javascript
 const AzFuncCascade = require('azure-functions-middleware-cascade');
@@ -108,3 +116,7 @@ app.useIf((context, STOP_SIGNAL) => {
   }
 });
 ```
+
+## License
+
+![GitHub](https://img.shields.io/github/license/noalvo/azure-functions-middleware-cascade)
