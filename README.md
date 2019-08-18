@@ -1,12 +1,12 @@
 # azure-functions-middleware-cascade
-A small middleware cascade for Azure Functions, like Express, Koa or Hapi.
+A middleware cascade, like Express, Koa or Hapi, but for Azure Functions!
 
 ## Features
 - Async/await middleware support
-- Cascade error capture (a.k.a. "catch middleware")
-- `New!` Execution order customization (in three phases)
-- `New!` Conditional middlewares
-- `New!` Cascade execution prevention (a.k.a. "stop signal")
+- [Cascade error capture](#Capturing-errors) (a.k.a. "catch middleware")
+- `New!` [Execution order customization](#Customizing-execution-order) (in three phases)
+- `New!` [Conditional middlewares](#Conditional-middlewares)
+- `New!` [Middleware execution prevention](#Stoping-the-cascade-execution) (a.k.a. "stop signal")
 
 ## How to use
 
