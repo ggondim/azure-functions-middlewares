@@ -93,9 +93,9 @@ class AzureFunctionCascade {
   /**
    * Returns the Azure Function entry point and process the full pipeline.
    */
-  async listen() {
-    return (context) => {
-      functionEntryPoint(context, this);
+  listen() {
+    return async (context) => {
+      return await functionEntryPoint(context, this);
     };
   }
 }
