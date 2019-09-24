@@ -1,9 +1,11 @@
 {
   "name": "azure-functions-middleware-cascade",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A small middleware cascade for Azure Functions, like Express, Koa or Hapi.",
   "main": "src/index.js",
-  "files": [ "src/" ],
+  "files": [
+    "src/"
+  ],
   "scripts": {
     "test": "mocha tests/** --timeout 5000"
   },
