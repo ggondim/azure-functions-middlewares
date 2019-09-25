@@ -9,15 +9,7 @@
   "scripts": {
     "test": "mocha tests/** --timeout 5000"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NOALVO/azure-functions-middleware-cascade.git"
-  },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/NOALVO/azure-functions-middleware-cascade/issues"
-  },
-  "homepage": "https://github.com/NOALVO/azure-functions-middleware-cascade#readme"
+  "license": "ISC"
 }
