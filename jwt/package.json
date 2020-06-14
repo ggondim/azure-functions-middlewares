@@ -1,0 +1,38 @@
+{
+  "name": "@azure-functions-middlewares/jwt",
+  "version": "0.1.3",
+  "description": "A middleware to validate JWT tokens using Azure Functions Middlewares (https://github.com/NOALggondimVO/azure-functions-middlewares#readme)",
+  "main": "src/index.js",
+  "files": [
+    "src/"
+  ],
+  "scripts": {
+    "test": "mocha tests/** --timeout 5000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ggondim/azure-functions-middlewares.git"
+  },
+  "keywords": [
+    "azure-functions",
+    "middleware",
+    "middlewares",
+    "middleware-pipeline",
+    "jwt"
+  ],
+  "author": {
+    "name": "Gustavo Gondim",
+    "url": "https://github.com/ggondim"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ggondim/azure-functions-middlewares/issues"
+  },
+  "peerDependencies": {
+    "@azure-functions-middlewares/core": "^1.0.0"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "rfc6750": "1.1.1"
+  }
+}

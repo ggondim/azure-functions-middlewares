@@ -1,0 +1,31 @@
+{
+  "name": "@azure-functions-middlewares/mongodb",
+  "version": "1.0.0",
+  "description": "A middleware to reuse and dispose MongoDB connections using Azure Functions Middlewares (https://github.com/ggondim/azure-functions-middlewares#readme)",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ggondim/azure-functions-middlewares.git"
+  },
+  "keywords": [
+    "azure-functions",
+    "middleware",
+    "middlewares",
+    "middleware-pipeline",
+    "mongodb"
+  ],
+  "author": {
+    "name": "Gustavo Gondim",
+    "url": "https://github.com/ggondim"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ggondim/azure-functions-middlewares/issues"
+  },
+  "peerDependencies": {
+    "@azure-functions-middlewares/core": "^1.0.0"
+  },
+  "dependencies": {
+    "mongodb": "^3.5.8"
+  }
+}
