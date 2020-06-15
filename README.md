@@ -106,10 +106,10 @@ app.use(async (context) => {
 module.exports = app.listen();
 ```
 
-**⚠ Things you must pay attention**
-- Always call `listen()` at the end of cascade to return the function entrypoint.
-- Always use async functions as middlewares. **This project doesn't supports sync functions anymore,** we are at 21th century.
-- **Do not return anything inside your middleware function**, unless you want to [throw an error](#Capturing-errors). Always use `context.res` to output what you need. If you want to pass values to the next middlewares, [use the context object reference](#Accessing-and-modifying-the-context).
+> **⚠&nbsp;&nbsp;Things you must pay attention**
+> - Always call `listen()` at the end of cascade to return the function entrypoint.
+> - Always use async functions as middlewares. **This project doesn't supports sync functions anymore,** we are at 21th century.
+> - **Do not return anything inside your middleware function**, unless you want to [throw an error](#Capturing-errors). Always use `context.res` to output what you need. If you want to pass values to the next middlewares, [use the context object reference](#Accessing-and-modifying-the-context).
 
 <p align="right"><a href="#Table-of-contents">↟ Back to top</a></p>
 
@@ -119,10 +119,10 @@ module.exports = app.listen();
 
 If the middleware cascade encounters an error thrown by any middleware, it will stop the execution and will call the middleware registered with `catch()` method.
 
-You can register a callback middleware to catch errors thrown in middleware cascade by passing a synchronous function with the arguments `(context, error)` , e.g.:
+You can **register a callback middleware to catch errors thrown in middleware cascade** by passing a synchronous function with the arguments `(context, error)` , e.g.:
 
 ```javascript
-app.catch((context, error) => {
+app.catch(async (context, error) => {
   context.res.status = 404;
   context.res.headers['X-Message'] = error;
 });
@@ -138,18 +138,18 @@ If you don't register any catch middleware, a default function will be registere
 
 The middleware cascade is executed in three different phases: pre-execution, main execution and post-execution.
 
-By default, all middlewares are pushed to the main execution phase, but you can customize the phase you are adding a middleware by passing a `phase` argument when registering a middleware using `use()` or `useIf()`:
+By default, all middlewares are pushed to the main execution phase, but you can **customize the phase you are adding a middleware** by passing a `phase` argument when registering a middleware using `use()` or `useIf()`:
 
 ```javascript
-app.use((context) => {
+app.use(async (context) => {
   context.log('This will be executed at the last phase');
 }, app.Phases.POST_PROCESSING);
 
-app.use((context) => {
+app.use(async (context) => {
   context.log('This will be executed at the first phase');
 }, app.Phases.PRE_PROCESSING);
 
-app.use((context) => {
+app.use(async (context) => {
   context.log('This will be executed at the second phase');
 });
 ```
@@ -162,7 +162,7 @@ app.Phases.MAIN // => second phase
 app.Phases.POST_PROCESSING // => last phase
 ```
 
-> These constant values are equal to its enums keys. So, the `PRE_PROCESSING` constant is equal to a `"PRE_PROCESSING"` string.
+> ℹ These constant values are equal to its enums keys. So, the `PRE_PROCESSING` constant is equal to a `"PRE_PROCESSING"` string.
 
 <p align="right"><a href="#Table-of-contents">↟ Back to top</a></p>
 
@@ -170,7 +170,7 @@ app.Phases.POST_PROCESSING // => last phase
 
 ### Conditional middlewares
 
-You can conditionally using the method `useIf()` instead the traditional `use()` method.
+**You can conditionally using the method `useIf()` instead the traditional `use()` method.**
 
 To specify the evaluation function, pass to the first argument a synchronous function `(context) => {}` that always returns a boolean value.
 
@@ -179,7 +179,7 @@ Example:
 ```javascript
 const isPostRequest = (context) => context.req.method === 'POST';
 
-app.useIf(isPostRequest, (context) => {
+app.useIf(isPostRequest, async (context) => {
   context.log('This will be executed only if is a HTTP POST');
 });
 ```
@@ -190,7 +190,7 @@ app.useIf(isPostRequest, (context) => {
 
 ### Stoping the cascade execution
 
-You can stop the cascade execution and prevent next middlewares to be executed in any middleware, by returning the `STOP_SIGNAL` in the middleware.
+You can **stop the cascade execution and prevent next middlewares to be executed** in any following middleware, by returning the `STOP_SIGNAL` in the middleware.
 
 It is useful when a middleware is used to validate the request before return any resource, just like Content-Type negotiation, authorization, etc.
 
@@ -199,7 +199,7 @@ The `STOP_SIGNAL` constant is avaiable as the second middleware's argument.
 Example:
 
 ```javascript
-app.use((context, STOP_SIGNAL) => {
+app.use(async (context, STOP_SIGNAL) => {
   if (!req.query.access_token) {
     context.res.status = 401;
 
@@ -208,7 +208,7 @@ app.use((context, STOP_SIGNAL) => {
 });
 ```
 
-> The `STOP_SIGNAL` constant value are equal to a `"!STOP!"` string.
+> ℹ The `STOP_SIGNAL` constant value are equal to a `"!STOP!"` string.
 
 <p align="right"><a href="#Table-of-contents">↟ Back to top</a></p>
 
@@ -216,13 +216,13 @@ app.use((context, STOP_SIGNAL) => {
 
 ### Accessing and modifying the `context`
 
-> The `context` argument avaiable in middlewares is the untouched reference to the [Azure Function Context object](https://github.com/Azure/azure-functions-nodejs-worker/blob/master/types/public/Interfaces.d.ts#L18).
+> 1️⃣&nbsp;&nbsp;**The `context` argument available in middlewares is the untouched reference to the [Azure Function Context object](https://github.com/Azure/azure-functions-nodejs-worker/blob/master/types/public/Interfaces.d.ts#L18).**
 
 This means you can **access the request** using `context.req` property, and also **set the response** using `context.res` property.
 
 By default, `context.res` and `context.res.headers` are always initialized with empty objects `{}` to prevent attributions to `undefined`.
 
-> The `context` argument is an object reference and added properties are avaiable through other references.
+> 2️⃣&nbsp;&nbsp;**The `context` argument is an object reference and added properties are available through other references.**
 
 This means you can **add your own custom properties** to make them available to other middlewares.
 
@@ -238,7 +238,7 @@ app.use(async (context) => {
 });
 ```
 
-> Azure Functions supports async functions and Azure Functions Middlewares handles everything needed in the function entrypoint generated by `app.listen()` method.
+> 3️⃣&nbsp;&nbsp;**Azure Functions supports async functions and Azure Functions Middlewares handles everything needed in the function entrypoint generated by `app.listen()` method.**
 
 So, **never call `context.done()`**.
 
@@ -256,14 +256,14 @@ Azure Functions Middlewares doesn't have an API to extend it, because the middle
 
 So, if you want to publish a middleware (or an evaluation function) you developed and think it will be useful for any other developer, fork this repository, add your middleware folder to the `middlewares` directory and make a pull request!
 
-We will review it and publish it to the organization `@azure-functions-middlewares`.
+We will review it and publish it to the NPM scope `@azure-functions-middlewares`.
 
 ### Avaiable community middlewares
 
-* [@azure-functions-middlewares/jwt](/tree/master/jwt): Validates JWTs in `Authorization` request header (RFC 6750).
-* [@azure-functions-middlewares/mongodb](/tree/master/mongodb): Opens a MongoDB connection at the beggining of middleware cascade, makes it avaiable in any middleware at the `context` variable and closes it at the end.
+* **[@azure-functions-middlewares/jwt](/tree/master/jwt)**: Validates JWTs in `Authorization` request header (RFC 6750).
+* **[@azure-functions-middlewares/mongodb](/tree/master/mongodb)**: Opens a MongoDB connection at the beggining of middleware cascade, makes it avaiable in any middleware at the `context` variable and closes it at the end.
 
-> Middlewares officially developed by or reviwed by Azure Functions Middlewares maintainers are always under the `@azure-functions-middlewares` scope in NPM registry.
+> ℹ Middlewares officially developed by or reviwed by Azure Functions Middlewares maintainers are always under the `@azure-functions-middlewares` scope in NPM registry.
 
 <p align="right"><a href="#Table-of-contents">↟ Back to top</a></p>
 
@@ -368,7 +368,7 @@ _async function (context, STOP_SIGNAL?):any_
 | Argument | Type | Required | Default | Description |
 | - | - | - | - | - |
 | context | [`Context` ℹ](https://github.com/Azure/azure-functions-nodejs-worker/blob/master/types/public/Interfaces.d.ts#L18) | true | | The Azure Function context object. |
-| STOP_SIGNAL | `'!STOP!' | null` | false | | The constant value of a stop signal to return if you want to stop the middleware execution. |
+| STOP_SIGNAL | `'!STOP!'` | false | `undefined` | | The constant value of a stop signal to return if you want to stop the middleware execution. |
 
 Returns: anything returned by the middleware will be thrown as an error, except the `STOP_SIGNAL` constant.
 
@@ -508,16 +508,16 @@ The design of `AzureFunctionCascade` class inside the project's core is really s
 
 Help us spreading the word or consider making a donation.
 
-#### Star the project
+#### ⭐ Star the project
 
 ![](https://img.shields.io/github/stars/ggondim/azure-functions-middlewares?style=social)
 
-#### Tweet it
+#### 🐤 Tweet it
 
 ![](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fggondim%2Fazure-functions-middlewares)
 
 
-#### Add your company to the [used by](#Used-in-production-by-companies) section
+#### 🙋‍♂️ Add your company to the [used by](#Used-in-production-by-companies) section
 
 Make a pull request or start an issue to add your company's name.
 
