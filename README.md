@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  Azure Functions Middlewares
+  🌩 Azure Functions Middlewares
   <br>
 </h1>
 
