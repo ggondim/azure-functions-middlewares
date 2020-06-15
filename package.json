@@ -1,5 +1,5 @@
 {
-  "name": "@azure-functions-middlewares/core",
+  "name": "azure-functions-middlewares",
   "version": "1.1.0",
   "description": "The most complete middleware solution for ⚡ Azure Functions.",
   "main": "src/index.js",
