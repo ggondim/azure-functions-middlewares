@@ -1,6 +1,6 @@
 {
   "name": "@azure-functions-middlewares/jwt",
-  "version": "0.1.3",
+  "version": "0.2.1",
   "description": "A middleware to validate JWT tokens using Azure Functions Middlewares (https://github.com/NOALggondimVO/azure-functions-middlewares#readme)",
   "main": "src/index.js",
   "files": [

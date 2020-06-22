@@ -3,7 +3,35 @@ const { extractTokenFromRequest } = require('rfc6750');
 
 module.exports = jwtMiddleware;
 
-function validateToken(context, key, jwtOptions, continueOnError, STOP_SIGNAL) {
+function validatePermissions(decodedToken, permissions) {
+  let notFoundPermissions = [];
+  if (permissions && Array.isArray(permissions)) {
+    if (
+      !decodedToken.permissions
+      || !decodedToken.permissions.length 
+      || !Array.isArray(decodedToken.permissions)
+    ) {
+      // token doesn't have permissions
+      notFoundPermissions = permissions;
+    } else {
+      notFoundPermissions = permissions
+        .filter(permission => !decodedToken.permissions.includes(permission));
+    }
+  }
+  return notFoundPermissions;
+}
+
+function validateExpiration(decodedToken) {
+  let valid = !decodedToken || !decodedToken.exp;
+  if (decodedToken && decodedToken.exp && (decodedToken.exp * 1000) > Date.now()) {
+    valid = true;
+  }
+  return valid;
+}
+
+function validateToken(context, key, jwtOptions, continueOnError, STOP_SIGNAL, {
+  permissions,
+} = {}) {
   const token = extractTokenFromRequest(context.req, {
     authorizationHeaderKey: 'authorization', // redefining to match Azure's capitalization
     cookieHeaderKey: 'cookie', // redefining to match Azure's capitalization
@@ -19,9 +47,26 @@ function validateToken(context, key, jwtOptions, continueOnError, STOP_SIGNAL) {
       context.accessTokenDecoded = jwt.verify(token, key, jwtOptions);
       context.accessToken = token;
 
+      if (!validateExpiration(context.accessTokenDecoded)) {
+        throw new Error('expired token');
+      }
+
+      const _permissions = validatePermissions(context.accessTokenDecoded, permissions);
+      if (_permissions.length) {
+        res.status = 403;
+        const error = `required permissions array: [${_permissions.join(',')}]`;
+        res.headers['WWW-Authenticate'] = `Bearer,error="insufficient_scope",error_description=${error}`;
+      }
+
     } catch (error) {
       res.status = 401;
-      res.headers['WWW-Authenticate'] = `Bearer,error="invalid_token",error_description=${error}`;
+      let _err = error;
+      if (error instanceof Error) {
+        _err = error.toString();
+      } else {
+        _err = JSON.stringify(error);
+      }
+      res.headers['WWW-Authenticate'] = `Bearer,error="invalid_token",error_description=${_err}`;
     }
   }
 
@@ -52,10 +97,12 @@ function validateToken(context, key, jwtOptions, continueOnError, STOP_SIGNAL) {
  * @see https://github.com/auth0/node-jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback for JWT options, key algorithms and error descriptions
  * @see https://tools.ietf.org/html/rfc6750#section-2 for supported authentication methods
  */
-function jwtMiddleware({ key, jwtOptions, continueOnError }) {
+function jwtMiddleware({ key, jwtOptions, continueOnError, permissions }) {
   return async (context, STOP_SIGNAL) => {
     try {
-      return validateToken(context, key, jwtOptions, continueOnError, STOP_SIGNAL);
+      return validateToken(context, key, jwtOptions, continueOnError, STOP_SIGNAL, {
+        permissions,
+      });
     } catch (error) {
       return error;
     }
